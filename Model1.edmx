@@ -1,0 +1,421 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище base10Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "base10.dbo.Журнал" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="Журнал">
+          <Key>
+            <PropertyRef Name="Ученик" />
+            <PropertyRef Name="Расписание" />
+            <PropertyRef Name="Оценка" />
+          </Key>
+          <Property Name="Ученик" Type="int" Nullable="false" />
+          <Property Name="Расписание" Type="int" Nullable="false" />
+          <Property Name="Оценка" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "base10.dbo.Класс" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="Класс">
+          <Key>
+            <PropertyRef Name="Номер" />
+          </Key>
+          <Property Name="Номер" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Предметы">
+          <Key>
+            <PropertyRef Name="КодПредмета" />
+          </Key>
+          <Property Name="КодПредмета" Type="int" Nullable="false" />
+          <Property Name="Название" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "base10.dbo.Преподаватели_по_предметам" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="Преподаватели_по_предметам">
+          <Key>
+            <PropertyRef Name="Преподаватель" />
+            <PropertyRef Name="Предмет" />
+          </Key>
+          <Property Name="Преподаватель" Type="int" Nullable="false" />
+          <Property Name="Предмет" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Преподаватель">
+          <Key>
+            <PropertyRef Name="КодПрепод" />
+          </Key>
+          <Property Name="КодПрепод" Type="int" Nullable="false" />
+          <Property Name="ФИО" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Расписание">
+          <Key>
+            <PropertyRef Name="Дата" />
+          </Key>
+          <Property Name="Дата" Type="datetime" Nullable="false" />
+          <Property Name="Класс" Type="int" Nullable="false" />
+          <Property Name="Предмет" Type="int" Nullable="false" />
+          <Property Name="Номер_урока" Type="int" Nullable="false" />
+          <Property Name="Журнал" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ученики">
+          <Key>
+            <PropertyRef Name="КодУченика" />
+          </Key>
+          <Property Name="КодУченика" Type="int" Nullable="false" />
+          <Property Name="ФИО" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Класс" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="Журнал_fk0">
+          <End Role="Ученики" Type="Self.Ученики" Multiplicity="1" />
+          <End Role="Журнал" Type="Self.Журнал" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ученики">
+              <PropertyRef Name="КодУченика" />
+            </Principal>
+            <Dependent Role="Журнал">
+              <PropertyRef Name="Ученик" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Класс_fk0">
+          <End Role="Ученики" Type="Self.Ученики" Multiplicity="1" />
+          <End Role="Класс" Type="Self.Класс" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Ученики">
+              <PropertyRef Name="КодУченика" />
+            </Principal>
+            <Dependent Role="Класс">
+              <PropertyRef Name="Номер" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Преподаватели_по_предметам_fk0">
+          <End Role="Преподаватель" Type="Self.Преподаватель" Multiplicity="1" />
+          <End Role="Преподаватели_по_предметам" Type="Self.Преподаватели_по_предметам" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Преподаватель">
+              <PropertyRef Name="КодПрепод" />
+            </Principal>
+            <Dependent Role="Преподаватели_по_предметам">
+              <PropertyRef Name="Преподаватель" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Преподаватели_по_предметам_fk1">
+          <End Role="Предметы" Type="Self.Предметы" Multiplicity="1" />
+          <End Role="Преподаватели_по_предметам" Type="Self.Преподаватели_по_предметам" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Предметы">
+              <PropertyRef Name="КодПредмета" />
+            </Principal>
+            <Dependent Role="Преподаватели_по_предметам">
+              <PropertyRef Name="Предмет" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Расписание_fk1">
+          <End Role="Предметы" Type="Self.Предметы" Multiplicity="1" />
+          <End Role="Расписание" Type="Self.Расписание" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Предметы">
+              <PropertyRef Name="КодПредмета" />
+            </Principal>
+            <Dependent Role="Расписание">
+              <PropertyRef Name="Предмет" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище base10ModelContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Предметы" EntityType="Self.Предметы" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Преподаватель" EntityType="Self.Преподаватель" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Расписание" EntityType="Self.Расписание" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ученики" EntityType="Self.Ученики" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Журнал" EntityType="Self.Журнал" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Журнал].[Ученик] AS [Ученик], 
+    [Журнал].[Расписание] AS [Расписание], 
+    [Журнал].[Оценка] AS [Оценка]
+    FROM [dbo].[Журнал] AS [Журнал]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Класс" EntityType="Self.Класс" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Класс].[Номер] AS [Номер]
+    FROM [dbo].[Класс] AS [Класс]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Преподаватели_по_предметам" EntityType="Self.Преподаватели_по_предметам" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Преподаватели_по_предметам].[Преподаватель] AS [Преподаватель], 
+    [Преподаватели_по_предметам].[Предмет] AS [Предмет]
+    FROM [dbo].[Преподаватели_по_предметам] AS [Преподаватели_по_предметам]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Журнал_fk0" Association="Self.Журнал_fk0">
+            <End Role="Ученики" EntitySet="Ученики" />
+            <End Role="Журнал" EntitySet="Журнал" />
+          </AssociationSet>
+          <AssociationSet Name="Класс_fk0" Association="Self.Класс_fk0">
+            <End Role="Ученики" EntitySet="Ученики" />
+            <End Role="Класс" EntitySet="Класс" />
+          </AssociationSet>
+          <AssociationSet Name="Преподаватели_по_предметам_fk0" Association="Self.Преподаватели_по_предметам_fk0">
+            <End Role="Преподаватель" EntitySet="Преподаватель" />
+            <End Role="Преподаватели_по_предметам" EntitySet="Преподаватели_по_предметам" />
+          </AssociationSet>
+          <AssociationSet Name="Преподаватели_по_предметам_fk1" Association="Self.Преподаватели_по_предметам_fk1">
+            <End Role="Предметы" EntitySet="Предметы" />
+            <End Role="Преподаватели_по_предметам" EntitySet="Преподаватели_по_предметам" />
+          </AssociationSet>
+          <AssociationSet Name="Расписание_fk1" Association="Self.Расписание_fk1">
+            <End Role="Предметы" EntitySet="Предметы" />
+            <End Role="Расписание" EntitySet="Расписание" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="base10Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Предметы">
+          <Key>
+            <PropertyRef Name="КодПредмета" />
+          </Key>
+          <Property Name="КодПредмета" Type="Int32" Nullable="false" />
+          <Property Name="Название" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Расписание" Relationship="Self.Расписание_fk1" FromRole="Предметы" ToRole="Расписание" />
+          <NavigationProperty Name="Преподаватель" Relationship="Self.Преподаватели_по_предметам" FromRole="Предметы" ToRole="Преподаватель" />
+        </EntityType>
+        <EntityType Name="Преподаватель">
+          <Key>
+            <PropertyRef Name="КодПрепод" />
+          </Key>
+          <Property Name="КодПрепод" Type="Int32" Nullable="false" />
+          <Property Name="ФИО" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Предметы" Relationship="Self.Преподаватели_по_предметам" FromRole="Преподаватель" ToRole="Предметы" />
+        </EntityType>
+        <EntityType Name="Расписание">
+          <Key>
+            <PropertyRef Name="Дата" />
+          </Key>
+          <Property Name="Дата" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Класс" Type="Int32" Nullable="false" />
+          <Property Name="Предмет" Type="Int32" Nullable="false" />
+          <Property Name="Номер_урока" Type="Int32" Nullable="false" />
+          <Property Name="Журнал" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Предметы" Relationship="Self.Расписание_fk1" FromRole="Расписание" ToRole="Предметы" />
+        </EntityType>
+        <EntityType Name="Ученики">
+          <Key>
+            <PropertyRef Name="КодУченика" />
+          </Key>
+          <Property Name="КодУченика" Type="Int32" Nullable="false" />
+          <Property Name="ФИО" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Класс" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Журнал" Relationship="Self.Журнал_fk0" FromRole="Ученики" ToRole="Журнал" />
+          <NavigationProperty Name="Класс1" Relationship="Self.Класс_fk0" FromRole="Ученики" ToRole="Класс" />
+        </EntityType>
+        <EntityType Name="Журнал">
+          <Key>
+            <PropertyRef Name="Ученик" />
+            <PropertyRef Name="Расписание" />
+            <PropertyRef Name="Оценка" />
+          </Key>
+          <Property Name="Ученик" Type="Int32" Nullable="false" />
+          <Property Name="Расписание" Type="Int32" Nullable="false" />
+          <Property Name="Оценка" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ученики" Relationship="Self.Журнал_fk0" FromRole="Журнал" ToRole="Ученики" />
+        </EntityType>
+        <EntityType Name="Класс">
+          <Key>
+            <PropertyRef Name="Номер" />
+          </Key>
+          <Property Name="Номер" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ученики" Relationship="Self.Класс_fk0" FromRole="Класс" ToRole="Ученики" />
+        </EntityType>
+        <Association Name="Расписание_fk1">
+          <End Role="Предметы" Type="Self.Предметы" Multiplicity="1" />
+          <End Role="Расписание" Type="Self.Расписание" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Предметы">
+              <PropertyRef Name="КодПредмета" />
+            </Principal>
+            <Dependent Role="Расписание">
+              <PropertyRef Name="Предмет" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Журнал_fk0">
+          <End Role="Ученики" Type="Self.Ученики" Multiplicity="1" />
+          <End Role="Журнал" Type="Self.Журнал" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ученики">
+              <PropertyRef Name="КодУченика" />
+            </Principal>
+            <Dependent Role="Журнал">
+              <PropertyRef Name="Ученик" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Класс_fk0">
+          <End Role="Ученики" Type="Self.Ученики" Multiplicity="1" />
+          <End Role="Класс" Type="Self.Класс" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Ученики">
+              <PropertyRef Name="КодУченика" />
+            </Principal>
+            <Dependent Role="Класс">
+              <PropertyRef Name="Номер" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Преподаватели_по_предметам">
+          <End Role="Преподаватель" Type="Self.Преподаватель" Multiplicity="*" />
+          <End Role="Предметы" Type="Self.Предметы" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="base10Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Предметы" EntityType="Self.Предметы" />
+          <EntitySet Name="Преподаватель" EntityType="Self.Преподаватель" />
+          <EntitySet Name="Расписание" EntityType="Self.Расписание" />
+          <EntitySet Name="Ученики" EntityType="Self.Ученики" />
+          <EntitySet Name="Журнал" EntityType="Self.Журнал" />
+          <EntitySet Name="Класс" EntityType="Self.Класс" />
+          <AssociationSet Name="Расписание_fk1" Association="Self.Расписание_fk1">
+            <End Role="Предметы" EntitySet="Предметы" />
+            <End Role="Расписание" EntitySet="Расписание" />
+          </AssociationSet>
+          <AssociationSet Name="Журнал_fk0" Association="Self.Журнал_fk0">
+            <End Role="Ученики" EntitySet="Ученики" />
+            <End Role="Журнал" EntitySet="Журнал" />
+          </AssociationSet>
+          <AssociationSet Name="Класс_fk0" Association="Self.Класс_fk0">
+            <End Role="Ученики" EntitySet="Ученики" />
+            <End Role="Класс" EntitySet="Класс" />
+          </AssociationSet>
+          <AssociationSet Name="Преподаватели_по_предметам" Association="Self.Преподаватели_по_предметам">
+            <End Role="Преподаватель" EntitySet="Преподаватель" />
+            <End Role="Предметы" EntitySet="Предметы" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище base10ModelContainer" CdmEntityContainer="base10Entities">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="base10Model.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Предметы">
+            <EntityTypeMapping TypeName="base10Model.Предметы">
+              <MappingFragment StoreEntitySet="Предметы">
+                <ScalarProperty Name="КодПредмета" ColumnName="КодПредмета" />
+                <ScalarProperty Name="Название" ColumnName="Название" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Преподаватель">
+            <EntityTypeMapping TypeName="base10Model.Преподаватель">
+              <MappingFragment StoreEntitySet="Преподаватель">
+                <ScalarProperty Name="КодПрепод" ColumnName="КодПрепод" />
+                <ScalarProperty Name="ФИО" ColumnName="ФИО" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Расписание">
+            <EntityTypeMapping TypeName="base10Model.Расписание">
+              <MappingFragment StoreEntitySet="Расписание">
+                <ScalarProperty Name="Дата" ColumnName="Дата" />
+                <ScalarProperty Name="Класс" ColumnName="Класс" />
+                <ScalarProperty Name="Предмет" ColumnName="Предмет" />
+                <ScalarProperty Name="Номер_урока" ColumnName="Номер_урока" />
+                <ScalarProperty Name="Журнал" ColumnName="Журнал" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ученики">
+            <EntityTypeMapping TypeName="base10Model.Ученики">
+              <MappingFragment StoreEntitySet="Ученики">
+                <ScalarProperty Name="КодУченика" ColumnName="КодУченика" />
+                <ScalarProperty Name="ФИО" ColumnName="ФИО" />
+                <ScalarProperty Name="Класс" ColumnName="Класс" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Журнал">
+            <EntityTypeMapping TypeName="base10Model.Журнал">
+              <MappingFragment StoreEntitySet="Журнал">
+                <ScalarProperty Name="Ученик" ColumnName="Ученик" />
+                <ScalarProperty Name="Расписание" ColumnName="Расписание" />
+                <ScalarProperty Name="Оценка" ColumnName="Оценка" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Класс">
+            <EntityTypeMapping TypeName="base10Model.Класс">
+              <MappingFragment StoreEntitySet="Класс">
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Преподаватели_по_предметам" TypeName="base10Model.Преподаватели_по_предметам" StoreEntitySet="Преподаватели_по_предметам">
+            <EndProperty Name="Преподаватель">
+              <ScalarProperty Name="КодПрепод" ColumnName="Преподаватель" />
+            </EndProperty>
+            <EndProperty Name="Предметы">
+              <ScalarProperty Name="КодПредмета" ColumnName="Предмет" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
